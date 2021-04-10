@@ -1,6 +1,21 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+const Login = () =>
+  import(/* webpackChunkName: "login_home_welcome" */ '../components/Login.vue')
+const Home = () =>
+  import(/* webpackChunkName: "login_home_welcome" */ '../components/Home.vue')
+const Welcome = () =>
+  import(
+    /* webpackChunkName: "login_home_welcome" */ '../components/Welcome.vue'
+  )
+const Storage = () =>
+  import(
+    /* webpackChunkName: "warehouse_management" */ '../components/warehouse/Storage.vue'
+  )
+const Category = () =>
+  import(
+    /* webpackChunkName: "warehouse_management" */ '../components/warehouse/Category.vue'
+  )
 
 Vue.use(VueRouter)
 
@@ -12,12 +27,18 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import(/* webpackChunkName: "login" */ '../components/Login.vue')
+    component: Login
   },
   {
     path: '/home',
     name: 'Home',
-    component: () => import(/* webpackChunkName: "home" */ '../components/Home.vue')
+    component: Home,
+    redirect: '/welcome',
+    children: [
+      { path: '/welcome', name: 'Welcome', component: Welcome },
+      { path: '/storage', name: 'Storage', component: Storage },
+      { path: '/category', name: 'Category', component: Category }
+    ]
   }
 ]
 

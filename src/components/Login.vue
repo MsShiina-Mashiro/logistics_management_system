@@ -45,57 +45,60 @@ export default {
     return {
       // 这是登录表单的绑定对象
       loginForm: {
-        username: "admin",
-        password: "123456",
+        username: 'admin',
+        password: '123456'
       },
       // 这是登录表单的校验规则
       loginFormRules: {
         // 用户名校验
         username: [
-          { required: true, message: "请输入登录名称", trigger: "blur" },
+          { required: true, message: '请输入登录名称', trigger: 'blur' },
           {
             min: 3,
             max: 10,
-            message: "长度在 3 到 10 个字符",
-            trigger: "blur",
-          },
+            message: '长度在 3 到 10 个字符',
+            trigger: 'blur'
+          }
         ],
         // 密码校验
         password: [
-          { required: true, message: "请输入登录密码", trigger: "blur" },
+          { required: true, message: '请输入登录密码', trigger: 'blur' },
           {
             min: 6,
             max: 15,
-            message: "长度在 6 到 15 个字符",
-            trigger: "blur",
-          },
-        ],
-      },
-    };
+            message: '长度在 6 到 15 个字符',
+            trigger: 'blur'
+          }
+        ]
+      }
+    }
   },
   methods: {
     // 重置表单
     resetForm() {
-      this.$refs.loginFormRef.resetFields();
+      this.$refs.loginFormRef.resetFields()
     },
     login() {
-      this.$refs.loginFormRef.validate(async (valid) => {
+      this.$refs.loginFormRef.validate(async valid => {
         // console.log(valid)
         let loginData = LoginData.login
-        console.log(loginData);
-        if (!valid) return;
-        if(this.loginForm.username !== loginData.userName || this.loginForm.password !== loginData.password){
+        console.log(loginData)
+        if (!valid) return
+        if (
+          this.loginForm.username !== loginData.userName ||
+          this.loginForm.password !== loginData.password
+        ) {
           return this.$message.error('登录失败')
         }
         // const { data: res } = await this.$http.post("login", this.loginForm);
         // if (res.meta.status !== 200) return this.$message.error("登录失败");
-        this.$message.success("登录成功");
+        this.$message.success('登录成功')
         // window.sessionStorage.setItem("token", res.data.token);
-        this.$router.push("/home");
-      });
-    },
-  },
-};
+        this.$router.push('/home')
+      })
+    }
+  }
+}
 </script>
 
 <style lang="less" scoped>
