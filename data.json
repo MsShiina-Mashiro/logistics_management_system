@@ -32,7 +32,7 @@
           },
           {
             "id": 122,
-            "authName": "运输方式管理",
+            "authName": "配送管理",
             "path": "transportation"
           }
         ]
@@ -542,6 +542,334 @@
         "item_name":"晨光中性笔",
         "unit": "个",
         "state": false
+      }
+    ]
+  },
+  "waybill":{
+    "waybillList": [
+      {
+        "id":"1",
+        "bill_id":"100001",
+        "item_id":"A002002",
+        "item_name":"纸巾",
+        "from":"杭州",
+        "to":"武汉",
+        "delivery_id": "001",
+        "delivery":"张A",
+        "phone":"13783677408",
+        "active_step": 2,
+        "steps": [
+          {
+            "title": "完成装货",
+            "description": "货物已经成功从仓库装货...\r\n2020-12-20",
+            "icon": "el-icon-box",
+            "status":"success"
+          },
+          {
+            "title": "正在运送",
+            "description": "货物正在运输中...\r\n2020-12-21",
+            "icon": "el-icon-truck",
+            "status":"finish"
+          },
+          {
+            "title": "等待派送",
+            "description": "货物等待派送...",
+            "icon": "el-icon-office-building",
+            "status":"process"
+          },
+          {
+            "title": "等待签收",
+            "description": "货物等待签收...",
+            "icon": "el-icon-document-checked",
+            "status":"wait"
+          }
+        ]
+      },
+      {
+        "id":"2",
+        "bill_id":"100002",
+        "item_id":"A002002",
+        "item_name":"纸巾",
+        "from":"杭州",
+        "to":"上海",
+        "delivery_id": "002",
+        "delivery":"李B",
+        "phone":"13899277783",
+        "active_step": 3,
+        "steps": [
+          {
+            "title": "完成装货",
+            "description": "货物已经成功从仓库装货...\r\n2020-12-26",
+            "icon": "el-icon-box",
+            "status":"success"
+          },
+          {
+            "title": "完成运送",
+            "description": "货物已经完成运输...\r\n2020-12-28",
+            "icon": "el-icon-truck",
+            "status":"success"
+          },
+          {
+            "title": "正在派送",
+            "description": "货物正在派送中，请注意及时收货，如有问题请联系派送员...\r\n2020-12-29",
+            "icon": "el-icon-office-building",
+            "status":"finish"
+          },
+          {
+            "title": "等待签收",
+            "description": "货物等待签收...",
+            "icon": "el-icon-document-checked",
+            "status":"process"
+          }
+        ]
+      },
+      {
+        "id":"3",
+        "bill_id":"100003",
+        "item_id":"A009008",
+        "item_name":"飞利浦剃须刀",
+        "from":"广州",
+        "to":"宁波",
+        "delivery_id": "003",
+        "delivery":"张B",
+        "phone":"13711600383",
+        "active_step": 4,
+        "steps": [
+          {
+            "title": "完成装货",
+            "description": "货物已经成功从仓库装货...\r\n2020-12-26",
+            "icon": "el-icon-box",
+            "status":"success"
+          },
+          {
+            "title": "完成运送",
+            "description": "货物已经完成运输...\r\n2020-12-28",
+            "icon": "el-icon-truck",
+            "status":"success"
+          },
+          {
+            "title": "完成派送",
+            "description": "货物已经完成派送...\r\n2020-12-29",
+            "icon": "el-icon-office-building",
+            "status":"success"
+          },
+          {
+            "title": "成功签收",
+            "description": "货物成功签收，谢谢您的光临，如有问题请联系派送员...\r\n2021-1-1",
+            "icon": "el-icon-document-checked",
+            "status":"success"
+          }
+        ]
+      },
+      {
+        "id":"4",
+        "bill_id":"100004",
+        "item_id":"A001049",
+        "item_name":"全麦面包",
+        "from":"杭州",
+        "to":"北京",
+        "delivery_id": "004",
+        "delivery":"王C",
+        "phone":"17330299825",
+        "active_step": 3,
+        "steps": [
+          {
+            "title": "完成装货",
+            "description": "货物已经成功从仓库装货...\r\n2020-12-26",
+            "icon": "el-icon-box",
+            "status":"success"
+          },
+          {
+            "title": "完成运送",
+            "description": "货物已经完成运输...\r\n2020-12-28",
+            "icon": "el-icon-truck",
+            "status":"success"
+          },
+          {
+            "title": "派送失败",
+            "description": "货物无人收货，正在安排重新派送，如有问题请联系派送员...\r\n2020-12-29",
+            "icon": "el-icon-office-building",
+            "status":"error"
+          },
+          {
+            "title": "等待签收",
+            "description": "货物等待签收...",
+            "icon": "el-icon-document-checked",
+            "status":"process"
+          }
+        ]
+      },
+      {
+        "id":"5",
+        "bill_id":"100005",
+        "item_id":"A001323",
+        "item_name":"即食鸡胸肉",
+        "from":"北京",
+        "to":"深圳",
+        "delivery_id": "005",
+        "delivery":"郑D",
+        "phone":"13805478890",
+        "active_step": 4,
+        "steps": [
+          {
+            "title": "完成装货",
+            "description": "货物已经成功从仓库装货...\r\n2020-12-26",
+            "icon": "el-icon-box",
+            "status":"success"
+          },
+          {
+            "title": "完成运送",
+            "description": "货物已经完成运输...\r\n2020-12-28",
+            "icon": "el-icon-truck",
+            "status":"success"
+          },
+          {
+            "title": "完成派送",
+            "description": "货物已经完成派送...\r\n2020-12-29",
+            "icon": "el-icon-office-building",
+            "status":"success"
+          },
+          {
+            "title": "等待签收",
+            "description": "货物等待签收，请注意及时签收，如有问题请联系派送员...\r\n2020-12-29",
+            "icon": "el-icon-document-checked",
+            "status":"finish"
+          }
+        ]
+      },
+      {
+        "id":"6",
+        "bill_id":"100006",
+        "item_id":"A006032",
+        "item_name":"亚瑟士运动鞋",
+        "from":"深圳",
+        "to":"杭州",
+        "delivery_id": "006",
+        "delivery":"钱E",
+        "phone":"15672839982",
+        "active_step": 3,
+        "steps": [
+          {
+            "title": "完成装货",
+            "description": "货物已经成功从仓库装货...\r\n2020-12-26",
+            "icon": "el-icon-box",
+            "status":"success"
+          },
+          {
+            "title": "完成运送",
+            "description": "货物已经完成运输...\r\n2020-12-28",
+            "icon": "el-icon-truck",
+            "status":"success"
+          },
+          {
+            "title": "正在派送",
+            "description": "货物正在派送中，请注意及时收货，如有问题请联系派送员...\r\n2020-12-29",
+            "icon": "el-icon-office-building",
+            "status":"finish"
+          },
+          {
+            "title": "等待签收",
+            "description": "货物等待签收...",
+            "icon": "el-icon-document-checked",
+            "status":"process"
+          }
+        ]
+      },
+      {
+        "id":"7",
+        "bill_id":"100007",
+        "item_id":"A021056",
+        "item_name":"UNO洗面奶",
+        "from":"杭州",
+        "to":"成都",
+        "delivery_id": "007",
+        "delivery":"孙F",
+        "phone":"15622345543",
+        "active_step": 3,
+        "steps": [
+          {
+            "title": "完成装货",
+            "description": "货物已经成功从仓库装货...\r\n2020-12-26",
+            "icon": "el-icon-box",
+            "status":"success"
+          },
+          {
+            "title": "完成运送",
+            "description": "货物已经完成运输...\r\n2020-12-28",
+            "icon": "el-icon-truck",
+            "status":"success"
+          },
+          {
+            "title": "正在派送",
+            "description": "货物正在派送中，请注意及时收货，如有问题请联系派送员...\r\n2020-12-29",
+            "icon": "el-icon-office-building",
+            "status":"finish"
+          },
+          {
+            "title": "等待签收",
+            "description": "货物等待签收...",
+            "icon": "el-icon-document-checked",
+            "status":"process"
+          }
+        ]
+      }
+    ]
+  },
+  "transportation":{
+    "delivery": [
+      {
+        "id":"1",
+        "delivery_id": "001",
+        "delivery":"张A",
+        "phone":"13783677408"
+      },
+      {
+        "id":"2",
+        "delivery_id":"002",
+        "delivery":"李B",
+        "phone":"13899277783"
+      },
+      {
+        "id":"3",
+        "delivery_id":"003",
+        "delivery":"张B",
+        "phone":"13711600383"
+      },
+      {
+        "id":"4",
+        "delivery_id":"004",
+        "delivery":"王C",
+        "phone":"17330299825"
+      },
+      {
+        "id":"5",
+        "delivery_id":"005",
+        "delivery":"郑D",
+        "phone":"13805478890"
+      },
+      {
+        "id":"6",
+        "delivery_id":"006",
+        "delivery":"钱E",
+        "phone":"15672839982"
+      },
+      {
+        "id":"7",
+        "delivery_id":"007",
+        "delivery":"孙F",
+        "phone":"15622345543"
+      },
+      {
+        "id":"8",
+        "delivery_id":"008",
+        "delivery":"沈Y",
+        "phone":"17306477728"
+      },
+      {
+        "id":"9",
+        "delivery_id":"009",
+        "delivery":"徐K",
+        "phone":"18258378886"
       }
     ]
   }

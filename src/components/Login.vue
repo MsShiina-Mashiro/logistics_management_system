@@ -82,7 +82,7 @@ export default {
       this.$refs.loginFormRef.validate(async valid => {
         // console.log(valid)
         let loginData = LoginData.login
-        console.log(loginData)
+        // console.log(loginData)
         if (!valid) return
         if (
           this.loginForm.username !== loginData.userName ||

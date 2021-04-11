@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { Button, Form, FormItem, Input, Table, TableColumn } from 'element-ui'
 import { Message } from 'element-ui'
 import { Container, Header, Aside, Main, Menu, Submenu, MenuItem, Breadcrumb, BreadcrumbItem, Card, Row, Col } from 'element-ui'
-import { Switch, Tooltip, Pagination, Dialog, MessageBox, Tag, Tree, Select, Option, Cascader, Alert, Tabs, TabPane, Steps, Step, Checkbox, CheckboxGroup, Upload, Timeline, TimelineItem ,DatePicker} from 'element-ui'
+import { Switch, Tooltip, Pagination, Dialog, MessageBox, Tag, Tree, Select, Option, Cascader, Alert, Tabs, TabPane, Steps, Step, Checkbox, CheckboxGroup, Upload, Timeline, TimelineItem ,DatePicker, Rate} from 'element-ui'
 // import Timeline from './timeline/index.js'
 // import TimelineItem from './timeline-item/index.js'
 
@@ -44,5 +44,6 @@ Vue.use(Upload)
 Vue.use(Timeline)
 Vue.use(TimelineItem)
 Vue.use(DatePicker)
+Vue.use(Rate)
 Vue.prototype.$confirm = MessageBox.confirm
 Vue.prototype.$message = Message

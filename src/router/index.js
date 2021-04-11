@@ -16,7 +16,14 @@ const Category = () =>
   import(
     /* webpackChunkName: "warehouse_management" */ '../components/warehouse/Category.vue'
   )
-
+const Waybill = () =>
+  import(
+    /* webpackChunkName: "logistics_management" */ '../components/logistics/Waybill.vue'
+  )
+const Transportation = () =>
+  import(
+    /* webpackChunkName: "logistics_management" */ '../components/logistics/Transportation.vue'
+)
 Vue.use(VueRouter)
 
 const routes = [
@@ -37,7 +44,9 @@ const routes = [
     children: [
       { path: '/welcome', name: 'Welcome', component: Welcome },
       { path: '/storage', name: 'Storage', component: Storage },
-      { path: '/category', name: 'Category', component: Category }
+      { path: '/category', name: 'Category', component: Category },
+      { path: '/waybill', name: 'Waybill', component: Waybill },
+      { path: '/transportation', name: 'Transportation', component: Transportation }
     ]
   }
 ]

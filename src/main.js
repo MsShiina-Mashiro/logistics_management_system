@@ -7,6 +7,8 @@ import './plugins/element.js'
 import './assets/fonts/iconfont.css'
 // 导入全局样式表
 import './assets/css/global.css'
+// 导入高德地图
+import AmapVue from '@amap/amap-vue'
 
 import axios from 'axios'
 // 配置请求的根路径
@@ -24,9 +26,10 @@ import axios from 'axios'
 // })
 
 Vue.prototype.$http = axios
+AmapVue.config.key = '82ad2746ce2623f7e0d1661f4489569e'
 
 Vue.config.productionTip = false
-
+Vue.use(AmapVue)
 if(process.env.NODE_ENV=='development')
 {
   import('./mock')
