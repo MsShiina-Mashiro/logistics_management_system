@@ -39,7 +39,7 @@
       },
       {
         "id":145,
-        "authName":"信息报表",
+        "authName":"信息统计",
         "children": [
           {
             "id": 155,
@@ -821,55 +821,64 @@
         "id":"1",
         "delivery_id": "001",
         "delivery":"张A",
-        "phone":"13783677408"
+        "phone":"13783677408",
+        "state":true
       },
       {
         "id":"2",
         "delivery_id":"002",
         "delivery":"李B",
-        "phone":"13899277783"
+        "phone":"13899277783",
+        "state":true
       },
       {
         "id":"3",
         "delivery_id":"003",
         "delivery":"张B",
-        "phone":"13711600383"
+        "phone":"13711600383",
+        "state":true
       },
       {
         "id":"4",
         "delivery_id":"004",
         "delivery":"王C",
-        "phone":"17330299825"
+        "phone":"17330299825",
+        "state":true
       },
       {
         "id":"5",
         "delivery_id":"005",
         "delivery":"郑D",
-        "phone":"13805478890"
+        "phone":"13805478890",
+        "state":true
       },
       {
         "id":"6",
         "delivery_id":"006",
         "delivery":"钱E",
-        "phone":"15672839982"
+        "phone":"15672839982",
+        "state":true
       },
       {
         "id":"7",
         "delivery_id":"007",
         "delivery":"孙F",
-        "phone":"15622345543"
+        "phone":"15622345543",
+        "state":true
       },
       {
         "id":"8",
         "delivery_id":"008",
         "delivery":"沈Y",
-        "phone":"17306477728"
+        "phone":"17306477728",
+        "state":true
       },
       {
         "id":"9",
         "delivery_id":"009",
         "delivery":"徐K",
-        "phone":"18258378886"
+        "phone":"18258378886",
+        "state":true
       }
     ]
   }

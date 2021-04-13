@@ -24,6 +24,10 @@ const Transportation = () =>
   import(
     /* webpackChunkName: "logistics_management" */ '../components/logistics/Transportation.vue'
 )
+const Charts = () =>
+  import(
+    /* webpackChunkName: "charts" */ '../components/charts/Charts.vue'
+)
 Vue.use(VueRouter)
 
 const routes = [
@@ -46,7 +50,8 @@ const routes = [
       { path: '/storage', name: 'Storage', component: Storage },
       { path: '/category', name: 'Category', component: Category },
       { path: '/waybill', name: 'Waybill', component: Waybill },
-      { path: '/transportation', name: 'Transportation', component: Transportation }
+      { path: '/transportation', name: 'Transportation', component: Transportation },
+      { path: '/charts', name: 'Charts', component: Charts }
     ]
   }
 ]

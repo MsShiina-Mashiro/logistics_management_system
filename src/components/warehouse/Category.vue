@@ -282,7 +282,7 @@ export default {
       //   userinfo.mg_state = !userinfo.mg_state;
       //   return this.$message.error("更新用户状态失败！");
       // }
-      this.$message.success('更新用户状态成功！')
+      this.$message.success('更新类别状态成功！')
     },
     // 根据 Id 删除相应的类别信息
     async removeItemById(id) {
@@ -351,7 +351,6 @@ export default {
           return x.id == this.editForm.id
         })
         this.categoryList[index].item_name = this.editForm.item_name
-        this.categoryList[index].number = this.editForm.number
         this.categoryList[index].unit = this.editForm.unit
         // 关闭对话框
         this.editDialogVisible = false
