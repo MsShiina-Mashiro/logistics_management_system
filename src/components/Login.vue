@@ -81,17 +81,11 @@ export default {
     login() {
       this.$refs.loginFormRef.validate(async valid => {
         // console.log(valid)
-        let loginData = LoginData.login
+        // let loginData = LoginData.login
         // console.log(loginData)
-        if (!valid) return
-        if (
-          this.loginForm.username !== loginData.userName ||
-          this.loginForm.password !== loginData.password
-        ) {
-          return this.$message.error('登录失败')
-        }
-        // const { data: res } = await this.$http.post("login", this.loginForm);
-        // if (res.meta.status !== 200) return this.$message.error("登录失败");
+        const { data: res } = await this.$http.post("login", this.loginForm);
+        // console.log(res);
+        if (res.meta.status !== 200) return this.$message.error("登录失败");
         this.$message.success('登录成功')
         // window.sessionStorage.setItem("token", res.data.token);
         this.$router.push('/home')

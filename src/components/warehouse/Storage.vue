@@ -149,7 +149,7 @@
                 style="width:100%"
               >
                 <el-option
-                  v-for="item in rmSomeStorageList"
+                  v-for="item in allCateList"
                   :key="item.id"
                   :label="item.item_id"
                   :value="item.item_id"
@@ -173,7 +173,7 @@
                 style="width:100%"
               >
                 <el-option
-                  v-for="item in rmSomeStorageList"
+                  v-for="item in allWareList"
                   :key="item.id"
                   :label="item.ware_id"
                   :value="item.ware_id"
@@ -209,7 +209,7 @@
                 style="width:100%"
               >
                 <el-option
-                  v-for="item in rmSomeStorageList"
+                  v-for="item in allCateList"
                   :key="item.id"
                   :label="item.item_id"
                   :value="item.item_id"
@@ -233,7 +233,7 @@
                 style="width:100%"
               >
                 <el-option
-                  v-for="item in rmSomeStorageList"
+                  v-for="item in allWareList"
                   :key="item.id"
                   :label="item.ware_id"
                   :value="item.ware_id"
@@ -353,7 +353,11 @@
         <el-form-item label="单位" prop="unit" label-width="100px">
           <el-input v-model="transForm.unit" disabled></el-input>
         </el-form-item>
-        <el-form-item label="调出仓库号" prop="from_ware_id" label-width="100px">
+        <el-form-item
+          label="调出仓库号"
+          prop="from_ware_id"
+          label-width="100px"
+        >
           <el-select
             v-model="transForm.from_ware_id"
             placeholder="请选择"
@@ -375,7 +379,7 @@
             style="width:100%"
           >
             <el-option
-              v-for="item in rmSomeStorageList"
+              v-for="item in allWareList"
               :key="item.id"
               :label="item.ware_id"
               :value="item.ware_id"
@@ -414,6 +418,10 @@ export default {
       allStorageList: [],
       // 去重后仓库库存信息
       rmSomeStorageList: [],
+      // 所有物品种类
+      allCateList: [],
+      // 所有仓库种类
+      allWareList:[],
       // 仓库库存信息
       storageList: [],
       // 查询与表格信息
@@ -697,6 +705,16 @@ export default {
     this.getStorageList()
   },
   methods: {
+    // 生成uuid
+    guid() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(
+        c
+      ) {
+        var r = (Math.random() * 16) | 0,
+          v = c == 'x' ? r : (r & 0x3) | 0x8
+        return v.toString(16)
+      })
+    },
     // 去重功能函数
     rmSome(arr, key) {
       let tempObj = {}
@@ -709,23 +727,51 @@ export default {
       })
       return Object.values(tempObj)
     },
+    // // 获取仓库库存信息
+    // getStorageList() {
+    //   let storagelist = StorageList.storage.storageList
+    //   this.allStorageList = storagelist
+    //   this.rmSomeStorageList = this.rmSome(storagelist, 'item_id')
+    //   this.rmSomeStorageList = this.rmSome(this.rmSomeStorageList, 'ware_id')
+    //   let pagesize = this.queryInfo.pagesize
+    //   let pagenum = this.queryInfo.pagenum
+    //   let addList = []
+    //   this.total = storagelist.length
+    //   // 伪造数据逻辑
+    //   for (let i = 0; i < pagesize; i++) {
+    //     let current = (pagenum - 1) * pagesize
+    //     if (current + i >= storagelist.length) break
+    //     addList.push(storagelist[current + i])
+    //   }
+    //   this.storageList = addList
+    // },
     // 获取仓库库存信息
-    getStorageList() {
-      let storagelist = StorageList.storage.storageList
-      this.allStorageList = storagelist
-      this.rmSomeStorageList = this.rmSome(storagelist, 'item_id')
+    async getStorageList() {
+      // let storagelist = StorageList.storage.storageList
+      const { data: res } = await this.$http.get('storage', {
+        params: this.queryInfo
+      })
+      const {data: res2} = await this.$http.get('category/storage',{})
+      const {data: res3} = await this.$http.get('warehouse/storage',{})
+      // console.log(res);
+      if (res.meta.status !== 200)
+        return this.$message.error('获取仓库信息列表失败！')
+      if (res2.meta.status !== 200)
+      return this.$message.error('获取类别信息列表失败！')
+      // 所有在列表中的物品
+      let allstoragelist = res.all
+      this.allStorageList = allstoragelist
+      // 所有物品种类
+      let allcate = res2.data
+      this.allCateList = allcate
+      // 所有仓库列表
+      let allware = res3.data
+      this.allWareList = allware
+      // console.log(allstoragelist);
+      this.rmSomeStorageList = this.rmSome(allstoragelist, 'item_id')
       this.rmSomeStorageList = this.rmSome(this.rmSomeStorageList, 'ware_id')
-      let pagesize = this.queryInfo.pagesize
-      let pagenum = this.queryInfo.pagenum
-      let addList = []
-      this.total = storagelist.length
-      // 伪造数据逻辑
-      for (let i = 0; i < pagesize; i++) {
-        let current = (pagenum - 1) * pagesize
-        if (current + i >= storagelist.length) break
-        addList.push(storagelist[current + i])
-      }
-      this.storageList = addList
+      this.storageList = res.data
+      this.total = allstoragelist.length
     },
     // 监听 pagesize 改变的事件
     handleSizeChange(newSize) {
@@ -754,16 +800,16 @@ export default {
       if (confirmResult !== 'confirm') {
         return this.$message.info('已取消删除！')
       }
-      // const { data: res } = await this.$http.delete("users/" + id);
-      // if (res.meta.status !== 200) {
-      //   return this.$message.error("删除用户失败！");
-      // }
-      let index = this.storageList.findIndex(x => {
-        return x.id == id
-      })
-      this.storageList.splice(index, 1)
-      this.$message.success('删除用户成功！')
-      // this.getStorageList();
+      const { data: res } = await this.$http.delete('storage/' + id)
+      if (res.meta.status !== 200) {
+        return this.$message.error('删除物品失败！')
+      }
+      // let index = this.storageList.findIndex(x => {
+      //   return x.id == id
+      // })
+      // this.storageList.splice(index, 1)
+      this.$message.success('删除物品成功！')
+      this.getStorageList()
     },
     // 展示编辑物品的对话框
     async showEditDialog(id) {
@@ -780,7 +826,7 @@ export default {
     },
     // 监听修改物品对话框的关闭事件
     editDialogClosed() {
-      // this.$refs.editFormRef.resetFields();
+      this.$refs.editFormRef.resetFields()
     },
     // 修改物品信息并提交
     editItemInfo() {
@@ -788,29 +834,28 @@ export default {
         if (!valid) {
           return
         }
-        // 发起修改用户信息的数据请求
-        // const { data: res } = await this.$http.put(
-        //   "users/" + this.editForm.id,
-        //   {
-        //     email: this.editForm.email,
-        //     mobile: this.editForm.mobile
-        //   }
-        // );
-        // if (res.meta.status !== 200) {
-        //   return this.$message.error("更新用户数据失败！");
-        // }
-        let index = this.storageList.findIndex(x => {
-          return x.id == this.editForm.id
-        })
+        // 发起修改物品信息的数据请求
+        const { data: res } = await this.$http.put(
+          'storage/' + this.editForm.id,
+          {
+            number: this.editForm.number
+          }
+        )
+        if (res.meta.status !== 200) {
+          return this.$message.error('更新物品数据失败！')
+        }
+        // let index = this.storageList.findIndex(x => {
+        //   return x.id == this.editForm.id
+        // })
         // this.storageList[index].item_name = this.editForm.item_name
-        this.storageList[index].number = this.editForm.number
+        // this.storageList[index].number = this.editForm.number
         // this.storageList[index].unit = this.editForm.unit
         // 关闭对话框
         this.editDialogVisible = false
         // 刷新数据列表
-        // this.getUserList();
+        this.getStorageList()
         // 提示修改成功
-        this.$message.success('更新用户数据成功！')
+        this.$message.success('更新物品数据成功！')
       })
     },
     // 入库对象框关闭
@@ -820,6 +865,8 @@ export default {
       // } else {
       //   this.$refs.dynamicInFormRef.resetFields()
       // }
+      this.$refs.staticInFormRef.resetFields()
+      this.$refs.dynamicInFormRef.resetFields()
     },
     // 入库提交
     inItemInfo() {
@@ -828,94 +875,123 @@ export default {
           if (!valid) {
             return
           }
-          this.storageList.push(this.staticInForm)
+          // this.storageList.push(this.staticInForm)
+          const { data: res } = await this.$http.post('storage/in', {
+            id: this.guid(),
+            item_id: this.staticInForm.item_id,
+            item_name: this.staticInForm.item_name,
+            number: this.staticInForm.number,
+            unit: this.staticInForm.unit,
+            ware_id: this.staticInForm.ware_id,
+            ware_name: this.staticInForm.ware_name,
+            dynamic: false
+          })
+          if (res.meta.status !== 201) {
+            return this.$message.error('入库失败！')
+          }
           // 关闭对话框
           this.inDialogVisible = false
           // 刷新数据列表
-          // this.getUserList();
+          this.getStorageList()
           // 提示修改成功
           this.$message.success('入库成功！')
-          this.staticInForm = {}
-          this.dynamicInForm = {}
+          // this.staticInForm = {}
+          // this.dynamicInForm = {}
         })
       } else {
         this.$refs.dynamicInFormRef.validate(async valid => {
           if (!valid) {
             return
           }
-          // #######################待开发######################
-          // #
-          // #
-          // #
-          // #
-          // #
-          // #######################待开发######################
+          const { data: res } = await this.$http.post('storage/in', {
+            id: this.guid(),
+            item_id: this.dynamicInForm.item_id,
+            item_name: this.dynamicInForm.item_name,
+            number: this.dynamicInForm.number,
+            unit: this.dynamicInForm.unit,
+            ware_id: this.dynamicInForm.ware_id,
+            ware_name: this.dynamicInForm.ware_name,
+            dynamic: this.dynamicInForm.dates
+          })
+          if (res.meta.status !== 201) {
+            return this.$message.error('入库失败！')
+          }
           // 关闭对话框
           this.inDialogVisible = false
           // 刷新数据列表
-          // this.getUserList();
+          this.getStorageList()
           // 提示修改成功
           this.$message.success('入库成功！')
-          this.staticInForm = {}
-          this.dynamicInForm = {}
+          // this.staticInForm = {}
+          // this.dynamicInForm = {}
         })
       }
     },
     // 监听出库对话框关闭
-    outDialogClosed() {},
+    outDialogClosed() {
+      this.$refs.outFormRef.resetFields()
+    },
     // 出库提交
     outItemInfo() {
       this.$refs.outFormRef.validate(async valid => {
         if (!valid) {
           return
         }
-        // #######################待开发######################
-        // #
-        // #
-        // #
-        // #
-        // #
-        // #######################待开发######################
-        // 关闭对话框
+        const { data: res } = await this.$http.post('storage/out', {
+          item_id: this.outForm.item_id,
+          item_name: this.outForm.item_name,
+          number: this.outForm.number,
+          unit: this.outForm.unit,
+          ware_id: this.outForm.ware_id
+        })
+        if (res.meta.status !== 200) {
+          return this.$message.error('出库失败，请检查出库数量！')
+        }
         // 关闭对话框
         this.outDialogVisible = false
         // 刷新数据列表
-        // this.getUserList();
+        this.getStorageList()
         // 提示修改成功
         this.$message.success('出库成功！')
-        this.outForm = {}
+        // this.outForm = {}
       })
     },
     // 越库对话框关闭
-    transDialogClosed() {},
+    transDialogClosed() {
+      this.$refs.transFormRef.resetFields()
+    },
     // 越库提交
     transItemInfo() {
       this.$refs.transFormRef.validate(async valid => {
         if (!valid) {
           return
         }
-        // #######################待开发######################
-        // #
-        // #
-        // #
-        // #
-        // #
-        // #######################待开发######################
-        // 关闭对话框
+        const { data: res } = await this.$http.post('storage/trans', {
+          id: this.guid(),
+          item_id: this.transForm.item_id,
+          item_name: this.transForm.item_name,
+          number: this.transForm.number,
+          unit: this.transForm.unit,
+          from_ware_id: this.transForm.from_ware_id,
+          to_ware_id: this.transForm.to_ware_id
+        })
+        if (res.meta.status !== 200) {
+          return this.$message.error("越库失败，请检查越库数量！");
+        }
         // 关闭对话框
         this.transDialogVisible = false
         // 刷新数据列表
-        // this.getUserList();
+        this.getStorageList();
         // 提示修改成功
         this.$message.success('越库成功！')
-        this.transForm = {}
+        // this.transForm = {}
       })
     }
   },
   computed: {},
   watch: {
     'staticInForm.item_id'(newVal, oldVal) {
-      this.allStorageList.forEach(item => {
+      this.allCateList.forEach(item => {
         if (item.item_id == newVal) {
           this.staticInForm.item_name = item.item_name
           this.staticInForm.unit = item.unit
@@ -923,14 +999,14 @@ export default {
       })
     },
     'staticInForm.ware_id'(newVal, oldVal) {
-      this.allStorageList.forEach(item => {
+      this.allWareList.forEach(item => {
         if (item.ware_id == newVal) {
           this.staticInForm.ware_name = item.ware_name
         }
       })
     },
     'dynamicInForm.item_id'(newVal, oldVal) {
-      this.allStorageList.forEach(item => {
+      this.allCateList.forEach(item => {
         if (item.item_id == newVal) {
           this.dynamicInForm.item_name = item.item_name
           this.dynamicInForm.unit = item.unit
@@ -938,7 +1014,7 @@ export default {
       })
     },
     'dynamicInForm.ware_id'(newVal, oldVal) {
-      this.allStorageList.forEach(item => {
+      this.allWareList.forEach(item => {
         if (item.ware_id == newVal) {
           this.dynamicInForm.ware_name = item.ware_name
         }
@@ -953,6 +1029,7 @@ export default {
           tempArr.push(item)
         }
       })
+      this.outForm.ware_id = ''
       this.haveOutItemList = tempArr
     },
     // 'outForm.ware_id'(newVal, oldVal) {
@@ -961,7 +1038,7 @@ export default {
     //       this.outForm.ware_name = item.ware_name
     //     }
     //   })
-    // }
+    // },
     'transForm.item_id'(newVal, oldVal) {
       let tempArr = []
       this.allStorageList.forEach(item => {
@@ -972,7 +1049,14 @@ export default {
         }
       })
       this.haveTransItemList = tempArr
-    }
+    },
+    'transForm.to_ware_id'(newVal, oldVal) {
+      this.allWareList.forEach(item => {
+        if (item.ware_id == newVal) {
+          this.transForm.to_ware_name = item.ware_name
+        }
+      })
+    },
   }
 }
 </script>
