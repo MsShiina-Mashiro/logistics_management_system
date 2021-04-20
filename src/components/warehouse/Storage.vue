@@ -421,7 +421,7 @@ export default {
       // 所有物品种类
       allCateList: [],
       // 所有仓库种类
-      allWareList:[],
+      allWareList: [],
       // 仓库库存信息
       storageList: [],
       // 查询与表格信息
@@ -751,13 +751,13 @@ export default {
       const { data: res } = await this.$http.get('storage', {
         params: this.queryInfo
       })
-      const {data: res2} = await this.$http.get('category/storage',{})
-      const {data: res3} = await this.$http.get('warehouse/storage',{})
+      const { data: res2 } = await this.$http.get('category/storage', {})
+      const { data: res3 } = await this.$http.get('warehouse/storage', {})
       // console.log(res);
       if (res.meta.status !== 200)
         return this.$message.error('获取仓库信息列表失败！')
       if (res2.meta.status !== 200)
-      return this.$message.error('获取类别信息列表失败！')
+        return this.$message.error('获取类别信息列表失败！')
       // 所有在列表中的物品
       let allstoragelist = res.all
       this.allStorageList = allstoragelist
@@ -976,12 +976,12 @@ export default {
           to_ware_id: this.transForm.to_ware_id
         })
         if (res.meta.status !== 200) {
-          return this.$message.error("越库失败，请检查越库数量！");
+          return this.$message.error('越库失败，请检查越库数量！')
         }
         // 关闭对话框
         this.transDialogVisible = false
         // 刷新数据列表
-        this.getStorageList();
+        this.getStorageList()
         // 提示修改成功
         this.$message.success('越库成功！')
         // this.transForm = {}
@@ -1056,7 +1056,7 @@ export default {
           this.transForm.to_ware_name = item.ware_name
         }
       })
-    },
+    }
   }
 }
 </script>
