@@ -294,7 +294,7 @@ export default {
     // 验证手机号的校验规则
     const checkMobile = (rule, value, cb) => {
       // 验证手机号的正则表达式
-      const regMobile = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
+      const regMobile = /^(0|86|17951)?(13[0-9]|15[012356789]|17[3678]|18[0-9]|14[57])[0-9]{8}$/
       if (regMobile.test(value)) {
         return cb()
       }
@@ -443,25 +443,52 @@ export default {
     //   })
     // })
     // },
+    // 生成uuid
+    guid() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(
+        c
+      ) {
+        var r = (Math.random() * 16) | 0,
+          v = c == 'x' ? r : (r & 0x3) | 0x8
+        return v.toString(16)
+      })
+    },
     // 获取订单信息
-    getWaybillList() {
-      let waybilllist = WaybillData.waybill.waybillList
-      let categorylist = WaybillData.category.categoryList
-      let deliverylist = WaybillData.transportation.delivery
-      this.allCategoryList = categorylist
-      this.allwaybillList = waybilllist
-      this.allDeliveryList = deliverylist
-      let pagesize = this.queryInfo.pagesize
-      let pagenum = this.queryInfo.pagenum
-      let addList = []
-      this.total = waybilllist.length
+    async getWaybillList() {
+      // let waybilllist = WaybillData.waybill.waybillList
+      // let categorylist = WaybillData.category.categoryList
+      // let deliverylist = WaybillData.transportation.delivery
+      // this.allCategoryList = categorylist
+      // this.allwaybillList = waybilllist
+      // this.allDeliveryList = deliverylist
+      // let pagesize = this.queryInfo.pagesize
+      // let pagenum = this.queryInfo.pagenum
+      // let addList = []
+      // this.total = waybilllist.length
       // 伪造数据逻辑
-      for (let i = 0; i < pagesize; i++) {
-        let current = (pagenum - 1) * pagesize
-        if (current + i >= waybilllist.length) break
-        addList.push(waybilllist[current + i])
-      }
-      this.waybillList = addList
+      // for (let i = 0; i < pagesize; i++) {
+      //   let current = (pagenum - 1) * pagesize
+      //   if (current + i >= waybilllist.length) break
+      //   addList.push(waybilllist[current + i])
+      // }
+      // this.waybillList = addList
+      const { data: res } = await this.$http.get('waybill', {
+        params: this.queryInfo
+      })
+      const { data: res2 } = await this.$http.get('category/waybill', {})
+      const { data: res3 } = await this.$http.get('transportation/waybill', {})
+      // console.log(res);
+      if (res.meta.status !== 200)
+        return this.$message.error('获取运单信息列表失败！')
+      if (res2.meta.status !== 200)
+        return this.$message.error('获取类别信息列表失败！')
+      if (res3.meta.status !== 200)
+        return this.$message.error('获取运送信息列表失败！')
+      this.waybillList = res.data
+      this.allwaybillList = res.all
+      this.allCategoryList = res2.data
+      this.allDeliveryList = res3.data
+      this.total = this.allwaybillList.length
     },
     // 监听 pagesize 改变的事件
     handleSizeChange(newSize) {
@@ -474,21 +501,37 @@ export default {
       this.getWaybillList()
     },
     // 监听新增订单对话框关闭事件
-    addDialogClosed() {},
+    addDialogClosed() {
+      this.$refs.addFormRef.resetFields()
+    },
     // 添加订单
-    addItemInfo() {
+    async addItemInfo() {
       this.$refs.addFormRef.validate(async valid => {
         if (!valid) {
           return
         }
-        this.waybillList.push(this.addForm)
+        const { data: res } = await this.$http.post('waybill/add', {
+          id: this.guid(),
+          bill_id: this.addForm.bill_id,
+          item_id: this.addForm.item_id,
+          item_name: this.addForm.item_name,
+          from: this.addForm.from,
+          to: this.addForm.to,
+          delivery_id: this.addForm.delivery_id,
+          delivery: this.addForm.delivery,
+          phone: this.addForm.phone
+        })
+        if (res.meta.status !== 201) {
+          return this.$message.error('添加失败！')
+        }
+        // this.waybillList.push(this.addForm)
         // 关闭对话框
         this.addDialogVisible = false
         // 刷新数据列表
-        // this.getUserList();
+        this.getWaybillList();
         // 提示修改成功
         this.$message.success('添加成功！')
-        this.addForm = {}
+        // this.addForm = {}
       })
     },
     // 根据 Id 删除相应的运单信息
@@ -508,16 +551,16 @@ export default {
       if (confirmResult !== 'confirm') {
         return this.$message.info('已取消删除！')
       }
-      // const { data: res } = await this.$http.delete("users/" + id);
-      // if (res.meta.status !== 200) {
-      //   return this.$message.error("删除用户失败！");
-      // }
-      let index = this.waybillList.findIndex(x => {
-        return x.id == id
-      })
-      this.waybillList.splice(index, 1)
+      const { data: res } = await this.$http.delete("waybill/" + id);
+      if (res.meta.status !== 200) {
+        return this.$message.error("删除用户失败！");
+      }
+      // let index = this.waybillList.findIndex(x => {
+      //   return x.id == id
+      // })
+      // this.waybillList.splice(index, 1)
       this.$message.success('删除运单成功！')
-      // this.getStorageList();
+      this.getWaybillList();
     },
     // 展示编辑运单的对话框
     async showEditDialog(id) {
@@ -535,39 +578,45 @@ export default {
     },
     // 监听修改运单对话框的关闭事件
     editDialogClosed() {
-      // this.$refs.editFormRef.resetFields();
+      this.$refs.editFormRef.resetFields();
     },
     // 修改运单信息
-    editItemInfo() {
+    async editItemInfo() {
       this.$refs.editFormRef.validate(async valid => {
         if (!valid) {
           return
         }
         // 发起修改用户信息的数据请求
-        // const { data: res } = await this.$http.put(
-        //   "users/" + this.editForm.id,
-        //   {
-        //     email: this.editForm.email,
-        //     mobile: this.editForm.mobile
-        //   }
-        // );
-        // if (res.meta.status !== 200) {
-        //   return this.$message.error("更新用户数据失败！");
-        // }
-        let index = this.waybillList.findIndex(x => {
-          return x.id == this.editForm.id
-        })
-        this.waybillList[index].item_id = this.editForm.item_id
-        this.waybillList[index].item_name = this.editForm.item_name
-        this.waybillList[index].from = this.editForm.from
-        this.waybillList[index].to = this.editForm.to
-        this.waybillList[index].delivery_id = this.editForm.delivery_id
-        this.waybillList[index].delivery = this.editForm.delivery
-        this.waybillList[index].phone = this.editForm.phone
+        const { data: res } = await this.$http.put(
+          "waybill/" + this.editForm.id,
+          {
+            bill_id: this.editForm.bill_id,
+            item_id: this.editForm.item_id,
+            item_name: this.editForm.item_name,
+            from: this.editForm.from,
+            to: this.editForm.to,
+            delivery_id: this.editForm.delivery_id,
+            delivery: this.editForm.delivery,
+            phone: this.editForm.phone
+          }
+        );
+        if (res.meta.status !== 200) {
+          return this.$message.error("更新用户数据失败！");
+        }
+        // let index = this.waybillList.findIndex(x => {
+        //   return x.id == this.editForm.id
+        // })
+        // this.waybillList[index].item_id = this.editForm.item_id
+        // this.waybillList[index].item_name = this.editForm.item_name
+        // this.waybillList[index].from = this.editForm.from
+        // this.waybillList[index].to = this.editForm.to
+        // this.waybillList[index].delivery_id = this.editForm.delivery_id
+        // this.waybillList[index].delivery = this.editForm.delivery
+        // this.waybillList[index].phone = this.editForm.phone
         // 关闭对话框
         this.editDialogVisible = false
         // 刷新数据列表
-        // this.getUserList();
+        this.getWaybillList();
         // 提示修改成功
         this.$message.success('更新用户数据成功！')
       })

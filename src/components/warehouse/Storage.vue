@@ -769,7 +769,9 @@ export default {
       this.allWareList = allware
       // console.log(allstoragelist);
       this.rmSomeStorageList = this.rmSome(allstoragelist, 'item_id')
-      this.rmSomeStorageList = this.rmSome(this.rmSomeStorageList, 'ware_id')
+      // console.log(this.rmSomeStorageList);
+      // this.rmSomeStorageList = this.rmSome(this.rmSomeStorageList, 'ware_id')
+      // console.log(this.rmSomeStorageList);
       this.storageList = res.data
       this.total = allstoragelist.length
     },
@@ -829,7 +831,7 @@ export default {
       this.$refs.editFormRef.resetFields()
     },
     // 修改物品信息并提交
-    editItemInfo() {
+    async editItemInfo() {
       this.$refs.editFormRef.validate(async valid => {
         if (!valid) {
           return
@@ -869,7 +871,7 @@ export default {
       this.$refs.dynamicInFormRef.resetFields()
     },
     // 入库提交
-    inItemInfo() {
+    async inItemInfo() {
       if (this.activeInTab == 'staticIn') {
         this.$refs.staticInFormRef.validate(async valid => {
           if (!valid) {
@@ -932,7 +934,7 @@ export default {
       this.$refs.outFormRef.resetFields()
     },
     // 出库提交
-    outItemInfo() {
+    async outItemInfo() {
       this.$refs.outFormRef.validate(async valid => {
         if (!valid) {
           return
@@ -961,7 +963,7 @@ export default {
       this.$refs.transFormRef.resetFields()
     },
     // 越库提交
-    transItemInfo() {
+    async transItemInfo() {
       this.$refs.transFormRef.validate(async valid => {
         if (!valid) {
           return

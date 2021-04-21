@@ -161,6 +161,8 @@ export default {
     return {
       // 所有类别信息
       allCategoryList: [],
+      // 总数
+      total: 0,
       // 类别信息
       categoryList: [],
       // 查询与页面信息
@@ -245,21 +247,39 @@ export default {
     this.getCategoryList()
   },
   methods: {
+    // 生成uuid
+    guid() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(
+        c
+      ) {
+        var r = (Math.random() * 16) | 0,
+          v = c == 'x' ? r : (r & 0x3) | 0x8
+        return v.toString(16)
+      })
+    },
     // 获取类别信息
-    getCategoryList() {
-      let categorylist = CategoryList.category.categoryList
-      this.allCategoryList = categorylist
-      let pagesize = this.queryInfo.pagesize
-      let pagenum = this.queryInfo.pagenum
-      let tempAddList = []
-      this.total = categorylist.length
-      // 伪造数据逻辑
-      for (let i = 0; i < pagesize; i++) {
-        let current = (pagenum - 1) * pagesize
-        if (current + i >= categorylist.length) break
-        tempAddList.push(categorylist[current + i])
+    async getCategoryList() {
+      // let categorylist = CategoryList.category.categoryList
+      // this.allCategoryList = categorylist
+      // let pagesize = this.queryInfo.pagesize
+      // let pagenum = this.queryInfo.pagenum
+      const {data:res} = await this.$http.get('category', {
+        params: this.queryInfo
+      })
+      if(res.meta.status != 200) {
+        return this.$message.error('获取物品信息列表失败！')
       }
-      this.categoryList = tempAddList
+      this.allCategoryList = res.all
+      this.categoryList = res.data
+      // let tempAddList = []
+      this.total = this.allCategoryList.length
+      // // 伪造数据逻辑
+      // for (let i = 0; i < pagesize; i++) {
+      //   let current = (pagenum - 1) * pagesize
+      //   if (current + i >= categorylist.length) break
+      //   tempAddList.push(categorylist[current + i])
+      // }
+      // this.categoryList = tempAddList
     },
     // 监听 pagesize 改变的事件
     handleSizeChange(newSize) {
@@ -272,16 +292,16 @@ export default {
       this.getCategoryList()
     },
     // 监听 switch 开关状态的变化
-    async categoryStateChanged(userinfo) {
+    async categoryStateChanged(cateinfo) {
       // console.log(userinfo);
-      // const { data: res } = await this.$http.put(
-      //   `users/${userinfo.id}/state/${userinfo.mg_state}`
-      // );
+      const { data: res } = await this.$http.put(
+        `category/${cateinfo.id}/state/${cateinfo.state}`
+      );
       // console.log(res);
-      // if (res.meta.status !== 200) {
-      //   userinfo.mg_state = !userinfo.mg_state;
-      //   return this.$message.error("更新用户状态失败！");
-      // }
+      if (res.meta.status !== 200) {
+        userinfo.state = !userinfo.state;
+        return this.$message.error("更新类别状态失败！");
+      }
       this.$message.success('更新类别状态成功！')
     },
     // 根据 Id 删除相应的类别信息
@@ -301,19 +321,19 @@ export default {
       if (confirmResult !== 'confirm') {
         return this.$message.info('已取消删除！')
       }
-      // const { data: res } = await this.$http.delete("users/" + id);
-      // if (res.meta.status !== 200) {
-      //   return this.$message.error("删除用户失败！");
-      // }
-      let index = this.categoryList.findIndex(x => {
-        return x.id == id
-      })
-      this.categoryList.splice(index, 1)
+      const { data: res } = await this.$http.delete("category/" + id);
+      if (res.meta.status !== 200) {
+        return this.$message.error("删除类别失败！");
+      }
+      // let index = this.categoryList.findIndex(x => {
+      //   return x.id == id
+      // })
+      // this.categoryList.splice(index, 1)
       this.$message.success('删除类别成功！')
-      // this.getStorageList();
+      this.getCategoryList();
     },
     // 展示编辑类别的对话框
-    async showEditDialog(id) {
+    showEditDialog(id) {
       // const { data: res } = await this.$http.get("users/" + id);
       // if (res.meta.status !== 200) {
       //   return this.$message.error("查询用户数据失败！");
@@ -328,54 +348,67 @@ export default {
     },
     // 监听修改类别对话框的关闭事件
     editDialogClosed() {
-      // this.$refs.editFormRef.resetFields();
+      this.$refs.editFormRef.resetFields();
     },
     // 修改类别信息并提交
-    editItemInfo() {
+    async editItemInfo() {
       this.$refs.editFormRef.validate(async valid => {
         if (!valid) {
           return
         }
-        // 发起修改用户信息的数据请求
-        // const { data: res } = await this.$http.put(
-        //   "users/" + this.editForm.id,
-        //   {
-        //     email: this.editForm.email,
-        //     mobile: this.editForm.mobile
-        //   }
-        // );
-        // if (res.meta.status !== 200) {
-        //   return this.$message.error("更新用户数据失败！");
-        // }
-        let index = this.categoryList.findIndex(x => {
-          return x.id == this.editForm.id
-        })
-        this.categoryList[index].item_name = this.editForm.item_name
-        this.categoryList[index].unit = this.editForm.unit
+        // 发起修改类别信息的数据请求
+        const { data: res } = await this.$http.put(
+          "category/" + this.editForm.id,
+          {
+            item_id: this.editForm.item_id,
+            item_name: this.editForm.item_name,
+            unit: this.editForm.unit
+          }
+        );
+        if (res.meta.status !== 200) {
+          return this.$message.error("更新类别数据失败！");
+        }
+        // let index = this.categoryList.findIndex(x => {
+        //   return x.id == this.editForm.id
+        // })
+        // this.categoryList[index].item_name = this.editForm.item_name
+        // this.categoryList[index].unit = this.editForm.unit
         // 关闭对话框
         this.editDialogVisible = false
         // 刷新数据列表
-        // this.getUserList();
+        this.getCategoryList();
         // 提示修改成功
         this.$message.success('更新用户数据成功！')
       })
     },
     // 监听新增类别对话框关闭事件
-    addDialogClosed() {},
+    addDialogClosed() {
+      this.$refs.addFormRef.resetFields()
+    },
     // 添加类别
-    addItemInfo() {
+    async addItemInfo() {
       this.$refs.addFormRef.validate(async valid => {
         if (!valid) {
           return
         }
-        this.categoryList.push(this.addForm)
+        const { data: res } = await this.$http.post('category/add', {
+          id: this.guid(),
+          item_id: this.addForm.item_id,
+          item_name: this.addForm.item_name,
+          unit: this.addForm.unit,
+          state: this.addForm.state
+        })
+        if (res.meta.status !== 201) {
+          return this.$message.error('新增条目失败！')
+        }
+        // this.categoryList.push(this.addForm)
         // 关闭对话框
         this.addDialogVisible = false
         // 刷新数据列表
-        // this.getUserList();
+        this.getCategoryList();
         // 提示修改成功
-        this.$message.success('入库成功！')
-        this.addForm = {}
+        this.$message.success('新增条目成功！')
+        // this.addForm = {}
       })
     }
   }
