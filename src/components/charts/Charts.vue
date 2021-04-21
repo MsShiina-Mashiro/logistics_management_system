@@ -10,12 +10,12 @@
     <el-row :gutter="12">
       <el-col :span="12">
         <el-card header="库存信息">
-          <div id="main" style="width: 500px; height: 400px;"></div>
+          <div id="storageInfo" style="width: 500px; height: 400px;"></div>
         </el-card>
       </el-col>
       <el-col :span="12">
         <el-card header="订单评价信息">
-          <div id="main" style="width: 500px; height: 400px;"></div>
+          <div id="billInfo" style="width: 500px; height: 400px;"></div>
         </el-card>
       </el-col>
     </el-row>
@@ -76,7 +76,7 @@ export default {
   },
   created() {},
   mounted() {
-    var myChart = echarts.init(document.getElementById("main"));
+    var myChart = echarts.init(document.getElementById("storageInfo"));
     // 此处获取后端data后使用loadash的merge函数结合option
     /**
      * 待开发

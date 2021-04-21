@@ -299,7 +299,7 @@ export default {
       );
       // console.log(res);
       if (res.meta.status !== 200) {
-        userinfo.state = !userinfo.state;
+        cateinfo.state = !cateinfo.state;
         return this.$message.error("更新类别状态失败！");
       }
       this.$message.success('更新类别状态成功！')

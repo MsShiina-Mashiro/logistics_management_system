@@ -173,7 +173,7 @@ export default {
     // 验证手机号的校验规则
     const checkMobile = (rule, value, cb) => {
       // 验证手机号的正则表达式
-      const regMobile = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
+      const regMobile = /^(0|86|17951)?(13[0-9]|15[012356789]|17[3678]|18[0-9]|14[57])[0-9]{8}$/
       if (regMobile.test(value)) {
         return cb()
       }
@@ -183,6 +183,8 @@ export default {
     return {
       // 所有配送员信息
       allDeliveryList: [],
+      // 信息总数
+      total: 0,
       // 配送员信息
       deliveryList: [],
       // 查询与表格表单
@@ -263,21 +265,40 @@ export default {
     this.getDeliveryList()
   },
   methods: {
+    // 生成uuid
+    guid() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(
+        c
+      ) {
+        var r = (Math.random() * 16) | 0,
+          v = c == 'x' ? r : (r & 0x3) | 0x8
+        return v.toString(16)
+      })
+    },
     // 获取配送员信息
-    getDeliveryList() {
-      let deliverylist = DeliveryList.transportation.delivery
-      this.allDeliveryList = deliverylist
-      let pagesize = this.queryInfo.pagesize
-      let pagenum = this.queryInfo.pagenum
-      let tempAddList = []
-      this.total = deliverylist.length
+    async getDeliveryList() {
+      // let deliverylist = DeliveryList.transportation.delivery
+      // this.allDeliveryList = deliverylist
+      // let pagesize = this.queryInfo.pagesize
+      // let pagenum = this.queryInfo.pagenum
+      // let tempAddList = []
+      // this.total = deliverylist.length
       // 伪造数据逻辑
-      for (let i = 0; i < pagesize; i++) {
-        let current = (pagenum - 1) * pagesize
-        if (current + i >= deliverylist.length) break
-        tempAddList.push(deliverylist[current + i])
+      // for (let i = 0; i < pagesize; i++) {
+      //   let current = (pagenum - 1) * pagesize
+      //   if (current + i >= deliverylist.length) break
+      //   tempAddList.push(deliverylist[current + i])
+      // }
+      // this.deliveryList = tempAddList
+      const {data:res} = await this.$http.get('transportation', {
+        params: this.queryInfo
+      })
+      if(res.meta.status != 200) {
+        return this.$message.error('获取配送员信息列表失败！')
       }
-      this.deliveryList = tempAddList
+      this.allDeliveryList = res.all
+      this.deliveryList = res.data
+      this.total = this.allDeliveryList.length
     },
     // 监听 pagesize 改变的事件
     handleSizeChange(newSize) {
@@ -290,16 +311,15 @@ export default {
       this.getDeliveryList()
     },
     // 监听 switch 开关状态的变化
-    async deliveryStateChanged(userinfo) {
-      // console.log(userinfo);
-      // const { data: res } = await this.$http.put(
-      //   `users/${userinfo.id}/state/${userinfo.mg_state}`
-      // );
+    async deliveryStateChanged(transinfo) {
+      const { data: res } = await this.$http.put(
+        `transportation/${transinfo.id}/state/${transinfo.state}`
+      );
       // console.log(res);
-      // if (res.meta.status !== 200) {
-      //   userinfo.mg_state = !userinfo.mg_state;
-      //   return this.$message.error("更新用户状态失败！");
-      // }
+      if (res.meta.status !== 200) {
+        transinfo.state = !transinfo.state;
+        return this.$message.error("更新配送员状态失败！");
+      }
       this.$message.success('更新配送员状态成功！')
     },
     // 根据 Id 删除相应的配送员信息
@@ -319,19 +339,19 @@ export default {
       if (confirmResult !== 'confirm') {
         return this.$message.info('已取消删除！')
       }
-      // const { data: res } = await this.$http.delete("users/" + id);
-      // if (res.meta.status !== 200) {
-      //   return this.$message.error("删除用户失败！");
-      // }
-      let index = this.deliveryList.findIndex(x => {
-        return x.id == id
-      })
-      this.deliveryList.splice(index, 1)
-      this.$message.success('删除类别成功！')
-      // this.getStorageList();
+      const { data: res } = await this.$http.delete("transportation/" + id);
+      if (res.meta.status !== 200) {
+        return this.$message.error("删除配送员信息失败！");
+      }
+      // let index = this.deliveryList.findIndex(x => {
+      //   return x.id == id
+      // })
+      // this.deliveryList.splice(index, 1)
+      this.$message.success('删除配送员信息成功！')
+      this.getDeliveryList();
     },
     // 展示编辑配送员的对话框
-    async showEditDialog(id) {
+    showEditDialog(id) {
       // const { data: res } = await this.$http.get("users/" + id);
       // if (res.meta.status !== 200) {
       //   return this.$message.error("查询用户数据失败！");
@@ -346,7 +366,7 @@ export default {
     },
     // 监听修改配送员对话框的关闭事件
     editDialogClosed() {
-      // this.$refs.editFormRef.resetFields();
+      this.$refs.editFormRef.resetFields();
     },
     // 修改配送员信息并提交
     editItemInfo() {
@@ -354,46 +374,59 @@ export default {
         if (!valid) {
           return
         }
-        // 发起修改用户信息的数据请求
-        // const { data: res } = await this.$http.put(
-        //   "users/" + this.editForm.id,
-        //   {
-        //     email: this.editForm.email,
-        //     mobile: this.editForm.mobile
-        //   }
-        // );
-        // if (res.meta.status !== 200) {
-        //   return this.$message.error("更新用户数据失败！");
-        // }
-        let index = this.deliveryList.findIndex(x => {
-          return x.id == this.editForm.id
-        })
-        this.deliveryList[index].delivery = this.editForm.delivery
-        this.deliveryList[index].phone = this.editForm.phone
+        // 发起修改配送员信息的数据请求
+        const { data: res } = await this.$http.put(
+          "transportation/" + this.editForm.id,
+          {
+            delivery_id: this.editForm.delivery_id,
+            delivery: this.editForm.delivery,
+            phone: this.editForm.phone
+          }
+        );
+        if (res.meta.status !== 200) {
+          return this.$message.error("更新配送员数据失败！");
+        }
+        // let index = this.deliveryList.findIndex(x => {
+        //   return x.id == this.editForm.id
+        // })
+        // this.deliveryList[index].delivery = this.editForm.delivery
+        // this.deliveryList[index].phone = this.editForm.phone
         // 关闭对话框
         this.editDialogVisible = false
         // 刷新数据列表
-        // this.getUserList();
+        this.getDeliveryList();
         // 提示修改成功
-        this.$message.success('更新用户数据成功！')
+        this.$message.success('更新配送员数据成功！')
       })
     },
     // 监听新增配送员对话框关闭事件
-    addDialogClosed() {},
+    addDialogClosed() {
+      this.$refs.addFormRef.resetFields()
+    },
     // 添加配送员
     addItemInfo() {
       this.$refs.addFormRef.validate(async valid => {
         if (!valid) {
           return
         }
-        this.deliveryList.push(this.addForm)
+        const { data: res } = await this.$http.post('transportation/add', {
+          id: this.guid(),
+          delivery_id: this.addForm.delivery_id,
+          delivery: this.addForm.delivery,
+          phone: this.addForm.phone,
+          state: this.addForm.state
+        })
+        if (res.meta.status !== 201) {
+          return this.$message.error('新增条目失败！')
+        }
+        // this.deliveryList.push(this.addForm)
         // 关闭对话框
         this.addDialogVisible = false
         // 刷新数据列表
-        // this.getUserList();
+        this.getDeliveryList();
         // 提示修改成功
         this.$message.success('添加成功！')
-        this.addForm = {}
+        // this.addForm = {}
       })
     }
   }
