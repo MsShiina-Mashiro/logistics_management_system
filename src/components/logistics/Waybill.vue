@@ -254,11 +254,11 @@
         append-to-body
       >
         <div class="map-container" style="width: 100%; height: 400px;">
-          <amap :zoom="6" :center="[117, 36]">
-            <amap-marker :position="[117, 36]" />
+          <amap :zoom="6" :center="cities[searchForm.from]">
+            <amap-marker :position="cities[searchForm.from]" />
             <amap-polyline
-              :path="[[117, 36],[120,40]]"/>
-            <amap-marker :position="[120, 40]" />
+              :path="[cities[searchForm.from],cities[searchForm.to]]"/>
+            <amap-marker :position="cities[searchForm.to]" />
           </amap>
         </div>
         <!-- <div id='container'></div> -->
@@ -365,6 +365,16 @@ export default {
           { required: true, message: '请输入配送员联系方式', trigger: 'blur' },
           { validator: checkMobile, trigger: 'blur' }
         ]
+      },
+      cities: {
+        '杭州':[120.21321,30.252583],
+        '武汉':[114.310436,30.599462],
+        '上海':[121.47824,31.234447],
+        '广州':[113.270279,23.134804],
+        '宁波':[121.627395,29.86657],
+        '北京':[116.404188,39.913581],
+        '深圳':[114.063402,22.54632],
+        '成都':[104.072961,30.578745]
       },
       // 编辑运单对话框
       editDialogVisible: false,
@@ -538,7 +548,7 @@ export default {
     async removeItemById(id) {
       // 弹框询问用户是否删除数据
       const confirmResult = await this.$confirm(
-        '此操作将永久删除该类别, 是否继续？',
+        '此操作将永久删除该运单, 是否继续？',
         '提示',
         {
           confirmButtonText: '确定',

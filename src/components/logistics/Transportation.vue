@@ -92,13 +92,13 @@
         ref="editFormRef"
         label-width="70px"
       >
-        <el-form-item label="配送员id" prop="delivery_id" label-width="80px">
+        <el-form-item label="配送员id" prop="delivery_id" label-width="100px">
           <el-input v-model="editForm.delivery_id" disabled></el-input>
         </el-form-item>
-        <el-form-item label="配送员姓名" prop="delivery" label-width="80px">
+        <el-form-item label="配送员姓名" prop="delivery" label-width="100px">
           <el-input v-model="editForm.delivery"></el-input>
         </el-form-item>
-        <el-form-item label="联系电话" prop="phone" label-width="80px">
+        <el-form-item label="联系电话" prop="phone" label-width="100px">
           <el-input v-model="editForm.phone"></el-input>
         </el-form-item>
       </el-form>
@@ -120,16 +120,16 @@
         ref="addFormRef"
         label-width="70px"
       >
-        <el-form-item label="配送员id" prop="delivery_id" label-width="80px">
+        <el-form-item label="配送员id" prop="delivery_id" label-width="100px">
           <el-input v-model="addForm.delivery_id"></el-input>
         </el-form-item>
-        <el-form-item label="配送员姓名" prop="delivery" label-width="80px">
+        <el-form-item label="配送员姓名" prop="delivery" label-width="100px">
           <el-input v-model="addForm.delivery"></el-input>
         </el-form-item>
-        <el-form-item label="联系电话" prop="phone" label-width="80px">
+        <el-form-item label="联系电话" prop="phone" label-width="100px">
           <el-input v-model="addForm.phone"></el-input>
         </el-form-item>
-        <el-form-item label="状态" prop="state" label-width="80px">
+        <el-form-item label="状态" prop="state" label-width="100px">
           <el-switch v-model="addForm.state"></el-switch>
         </el-form-item>
       </el-form>
@@ -326,7 +326,7 @@ export default {
     async removeItemById(id) {
       // 弹框询问用户是否删除数据
       const confirmResult = await this.$confirm(
-        '此操作将永久删除该类别, 是否继续？',
+        '此操作将永久删除该配送员信息, 是否继续？',
         '提示',
         {
           confirmButtonText: '确定',

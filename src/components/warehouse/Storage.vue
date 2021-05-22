@@ -940,6 +940,7 @@ export default {
           return
         }
         const { data: res } = await this.$http.post('storage/out', {
+          id: this.guid(),
           item_id: this.outForm.item_id,
           item_name: this.outForm.item_name,
           number: this.outForm.number,
