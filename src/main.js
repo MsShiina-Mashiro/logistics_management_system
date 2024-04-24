@@ -26,7 +26,7 @@ axios.defaults.baseURL = 'http://127.0.0.1:8888/'
 // })
 
 Vue.prototype.$http = axios
-AmapVue.config.key = '82ad2746ce2623f7e0d1661f4489569e'
+AmapVue.config.key = ''  // use your own key!!!
 
 Vue.config.productionTip = false
 Vue.use(AmapVue)
